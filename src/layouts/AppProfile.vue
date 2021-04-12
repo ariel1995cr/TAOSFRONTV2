@@ -1,0 +1,61 @@
+<template>
+  <div class="layout-profile">
+    <div>
+      <img src="/images/profile.png" alt="" />
+    </div>
+    <button class="p-link layout-profile-link" @click="onClick">
+      <span class="username p-text-capitalize">{{ user.fullName }}</span>
+      <i class="pi pi-fw pi-cog"></i>
+    </button>
+    <transition name="layout-submenu-wrapper">
+      <ul v-show="expanded">
+        <li>
+          <button class="p-link">
+            <i class="pi pi-fw pi-user"></i><span>Cuenta</span>
+          </button>
+        </li>
+        <li>
+          <button class="p-link">
+            <i class="pi pi-fw pi-inbox"></i><span>Notificaciones</span
+            ><span class="menuitem-badge">2</span>
+          </button>
+        </li>
+        <li>
+          <button class="p-link" @click="cerrarSesion()">
+            <i class="pi pi-fw pi-power-off"></i><span>Cerrar Sesión</span>
+          </button>
+        </li>
+      </ul>
+    </transition>
+  </div>
+</template>
+
+<script>
+import router from "../router/index";
+import jwt_decode from "jwt-decode";
+export default {
+  data() {
+    return {
+      expanded: false,
+      data: {},
+      user: {},
+    };
+  },
+  mounted() {
+    this.user = jwt_decode(localStorage.getItem("token")).user;
+  },
+  methods: {
+    onClick(event) {
+      this.expanded = !this.expanded;
+      event.preventDefault();
+    },
+    cerrarSesion() {
+      window.localStorage.removeItem("token");
+      window.localStorage.removeItem("user");
+      router.push({ name: "Home" });
+    },
+  },
+};
+</script>
+
+<style scoped></style>

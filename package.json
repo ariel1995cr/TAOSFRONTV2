@@ -1,0 +1,52 @@
+{
+		"name": "TaosApp",
+		"version": "1.0.0",
+		"scripts": {
+				"dev": "vite",
+				"build": "vite build",
+				"serve": "vite preview"
+		},
+		"dependencies": {
+				"@j-t-mcc/vue3-chartjs": "^0.2.0",
+				"@tailwindcss/forms": "^0.2.1",
+				"chartjs-plugin-labels": "^1.1.0",
+				"jwt-decode": "^3.1.2",
+				"vue": "^3.0.5",
+				"vue-debounce": "^2.6.0",
+				"vue-router": "^4.0.4",
+				"vue3-google-map": "^0.7.0"
+		},
+		"devDependencies": {
+				"@fullcalendar/core": "4.0.2",
+				"@fullcalendar/daygrid": "4.0.1",
+				"@fullcalendar/interaction": "4.0.2",
+				"@fullcalendar/timegrid": "4.0.1",
+				"@vitejs/plugin-vue": "^1.1.4",
+				"@vue/cli-plugin-babel": "~4.5.0",
+				"@vue/cli-plugin-eslint": "~4.5.0",
+				"@vue/cli-plugin-router": "~4.5.0",
+				"@vue/cli-plugin-unit-jest": "^3.8.0",
+				"@vue/cli-service": "~4.5.0",
+				"@vue/compiler-sfc": "^3.0.5",
+				"@vue/test-utils": "1.0.0-beta.29",
+				"autoprefixer": "^10.2.4",
+				"axios": "^0.19.0",
+				"babel-core": "7.0.0-bridge.0",
+				"babel-eslint": "^10.1.0",
+				"babel-jest": "^25.0.0",
+				"chart.js": "2.7.3",
+				"eslint": "^6.7.2",
+				"eslint-plugin-vue": "^7.0.0-0",
+				"mitt": "^2.1.0",
+				"node-sass": "^4.14.1",
+				"postcss": "^8.2.6",
+				"primeflex": "2.0.0",
+				"primeicons": "4.1.0",
+				"primevue": "^3.0.2",
+				"prismjs": "^1.15.0",
+				"sass": "^1.32.8",
+				"sass-loader": "^8.0.2",
+				"tailwindcss": "^2.0.3",
+				"vite": "^2.0.1"
+		}
+}
