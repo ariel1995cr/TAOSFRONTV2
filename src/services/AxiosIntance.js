@@ -10,6 +10,7 @@ InstanceTAOS.interceptors.request.use(
     const access_token = JSON.parse(window.localStorage.getItem("token"));
     config.headers = {
       Authorization: `Bearer ${access_token}`,
+      accept: "application/json",
     };
     return config;
   },

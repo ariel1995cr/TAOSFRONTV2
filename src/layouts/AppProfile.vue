@@ -1,18 +1,26 @@
 <template>
   <div class="layout-profile">
     <div>
-      <img src="/images/profile.png" alt="" />
+      <img
+        class="imageProfile"
+        width="100"
+        src="/images/usuario.svg"
+        v-if="!user.image"
+      />
+      <img class="perfil" width="100" :src="user.image" v-else />
     </div>
     <button class="p-link layout-profile-link" @click="onClick">
-      <span class="username p-text-capitalize">{{ user.fullName }}</span>
+      <span class="username p-text-capitalize">{{ user.nombre }} {{user.apellido}}</span>
       <i class="pi pi-fw pi-cog"></i>
     </button>
     <transition name="layout-submenu-wrapper">
       <ul v-show="expanded">
         <li>
-          <button class="p-link">
-            <i class="pi pi-fw pi-user"></i><span>Cuenta</span>
-          </button>
+          <router-link :to="'/dashboard/Perfil/ver'">
+            <button class="p-link">
+              <i class="pi pi-fw pi-user"></i><span>Cuenta</span>
+            </button>
+          </router-link>
         </li>
         <li>
           <button class="p-link">

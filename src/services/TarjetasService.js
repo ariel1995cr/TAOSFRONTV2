@@ -98,10 +98,11 @@ export default function dashboardService() {
     return response;
   };
 
-    const listadoMisAsignaciones = async (params, url = state.cards.first_page) => {
+    const listadoMisTarjetas = async (params, url = state.cards.first_page) => {
+        console.log(params);
 
         if (url == "") {
-            url = `${urlRequest}api/getMyAssignments?page=1`;
+            url = `${urlRequest}api/cardv2?page=1`;
         }
         let response = await instanceTaos
             .get(`${url}&q=${JSON.stringify(params)}`)
@@ -122,9 +123,9 @@ export default function dashboardService() {
         return response;
     };
 
-  const listadoMisTarjetas = async (query, url = state.cards.first_page) => {
+  const listadoMisAsignaciones = async (query, url = state.cards.first_page) => {
     if (url == "") {
-      url = `${urlRequest}api/myCards?page=1`;
+      url = `${urlRequest}api/getMyAssignments?page=1`;
     }
     let response = await instanceTaos
         .get(`${url}&q=${query}`)

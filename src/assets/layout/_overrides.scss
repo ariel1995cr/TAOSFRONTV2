@@ -1,1 +1,141 @@
 //Suggested location to add your overrides so that migration would be easy by just updating the SASS folder in the future
+.p-button{
+  background: red;
+  border: 1px red;
+}
+.p-button:enabled:hover{
+  background: darkred;
+  border-color: red;
+}
+
+.p-inputtext:enabled:hover{
+  border-color: red;
+}
+
+.p-inputtext:enabled:focus{
+  box-shadow: 0 0 0 0.1rem red;
+  border-color: red;
+}
+
+.p-datatable .p-sortable-column.p-highlight{
+  color: whitesmoke;
+}
+
+.p-datatable .p-sortable-column.p-highlight:hover{
+  color: white;
+}
+
+.p-datatable .p-sortable-column.p-highlight .p-sortable-column-icon{
+  color: whitesmoke;
+}
+
+.p-datatable .p-sortable-column.p-highlight .p-sortable-column-icon:before{
+  color: white;
+}
+
+.p-datatable .p-sortable-column:focus{
+  box-shadow: inset 0 0 0 0.0rem white;
+  border-color: white;
+  outline: 0 none;
+}
+
+a{
+  color: red;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  color: white;
+}
+
+.p-multiselect:not(.p-disabled):hover{
+  border-color: red;
+}
+
+.p-multiselect:not(.p-disabled):before{
+  border-color: red;
+}
+
+
+.p-multiselect:not(.p-disabled).p-focus{
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem indianred;
+  border-color: darkred;
+}
+
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight{
+  color: white;
+}
+
+.p-checkbox{
+  background-color: white;
+}
+
+
+.p-checkbox .p-checkbox-box.p-highlight {
+  border-color: red;
+  background: white;
+}
+
+.layout-sidebar-dark .layout-menu li.active-menuitem > a {
+  background-color: #2e3035;
+  color: red;
+}
+
+.layout-sidebar-dark .layout-menu li a:hover {
+  color: red;
+}
+
+.layout-menu li a:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: inset 0 0 0 0.2em gray;
+}
+
+
+.layout-sidebar-dark .layout-menu li a.router-link-active {
+  color: lightcoral;
+}
+
+.layout-sidebar-dark .layout-profile ul li button:hover {
+  color: red;
+}
+
+.p-link:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem gray;
+}
+
+.p-button.p-button-text {
+  background-color: transparent;
+  color: red;
+  border-color: transparent;
+}
+
+.p-button:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem lightcoral;
+}
+
+.p-button.p-button-text:enabled:hover {
+  background: rgba(33, 150, 243, 0.04);
+  color: lightcoral;
+  border-color: transparent;
+}
+
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+  border-color: red;
+}
+
+:focus-visible {
+  outline: -webkit-focus-ring-color auto 1px;
+  outline-color: red;
+}
+
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:focus {
+  border-color: red;
+  background: red;
+  color: #ffffff;
+}

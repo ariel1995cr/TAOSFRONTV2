@@ -45,15 +45,12 @@
 import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import CounterStats from "../../components/CounterStats.vue";
 import DashboardService from "../../services/DashboardService";
-import Vue3ChartJs from "@j-t-mcc/vue3-chartjs";
 import Chart from "primevue/chart";
 import ChartJsPluginDataLabels from "chartjs-plugin-labels";
 export default {
   components: {
     CounterStats,
-    Vue3ChartJs,
     Chart,
-    ChartJsPluginDataLabels,
   },
   setup() {
     const colores = ["#0055E5E","#B22F66", "#00CBCB", "#FF531F", "#FFB02F"];
@@ -326,7 +323,7 @@ export default {
       chartRefDataHYE.value.refresh();
       chartRefDataPOL.value.refresh();
       chartRefDataPP.value.refresh();
-      chartRefDataActos.value.refresh();
+
     });
 
     return {
@@ -348,8 +345,8 @@ export default {
       chartDataPOL,
       chartRefDataPP,
       chartDataPP,
-      chartRefDataRDP,
       chartDataCards,
+      chartRefDataRDP,
       chartRefDataCards,
       optionsActos,
       chartDataActos,
