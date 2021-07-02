@@ -22,8 +22,22 @@ export default function UbicationService() {
     return response;
   };
 
+  const buscarCiudad = async (ciudad) => {
+    let response = await instanceTaos
+      .get(`${urlRequest}api/ciudad/${ciudad}`)
+      .then((resp) => {
+        state.ciudades = resp.data;
+      })
+      .catch((err) => {
+        console.log(err);
+        state.error = err.response;
+      });
+    return response;
+  };
+
   return {
     ObtenerListadoCiudades,
+    buscarCiudad,
     state,
   };
 }

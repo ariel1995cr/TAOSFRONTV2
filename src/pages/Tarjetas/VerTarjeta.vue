@@ -6,18 +6,19 @@
   <div v-else>
     <div class="p-grid">
       <div class="p-col-12 p-lg-4">
+        <img height="250" width="250" :src="'/'+tarjeta.imagen"  v-if="tarjeta.imagen"/>
         <div class="p-col-12">
           <span class="p-text-bold">Numero de tarjeta:</span> {{ tarjeta.id }}
           <br />
-          <span class="p-text-bold">Creada por:</span> {{ tarjeta.fullName }}
+          <span class="p-text-bold">Creada por:</span> {{tarjeta.apellido}} {{ tarjeta.nombre }}
           <br />
           <span class="p-text-bold">En la fecha:</span> {{ tarjeta.created_at }}
           <br />
           <span class="p-text-bold">Estado actual:</span>
           {{ tarjeta.type_state_id }}
           <Button
-            label="Cambiar Estado"
-            class="p-button-outlined p-col-12 p-mt-2"
+            :label="tarjeta.type_state_id == 'Abierto' ? 'Cerrar tarjeta' : 'Abrir tarjeta'"
+            class="p-button-outlined p-button-secondary p-col-12 p-mt-2"
             @click="cambiarEstadoTarjeta"
           />
         </div>
@@ -66,7 +67,7 @@
               v-for="(responsable, idx) in stateResponsable.responsables"
               v-bind:key="idx"
             >
-              {{ responsable.fullName }}
+              {{ responsable.apellido }} {{ responsable.nombre }}
               <i
                 class="pi pi-times"
                 v-tooltip="'Eliminar responsable'"
@@ -83,14 +84,14 @@
         <div class="p-col-12 p-jc-center">
           <Button
             label="Agregar Responsable"
-            class="p-button-outlined"
+            class="p-button-outlined p-button-secondary"
             @click="openModalResponsable"
           />
         </div>
         <div class="p-col-12 p-justify-center">
           <ScrollPanel
             class="p-text-left p-px-1"
-            style="width: 100%; height: 300px; border: 1px solid #0388e5; border-radius: 5px; background-color:white"
+            style="width: 100%; height: 300px; border: 1px solid #41444D; border-radius: 5px; background-color:white"
           >
             <p
               style="fontSize: 13px"
@@ -101,7 +102,7 @@
               <br />
               Mensaje de
               <span class="p-text-capitalize">
-                {{ comentario.fullName }}
+                {{ comentario.apellido }} {{ comentario.nombre }}
               </span>
               <br />
               <span class="w-100" v-if="comentario.is_image">
@@ -126,7 +127,7 @@
           />
           <Button
             label="Agregar comentario"
-            class="p-button-outlined p-col-12 p-mt-2"
+            class="p-button-outlined p-button-secondary p-col-12 p-mt-2"
             @click="agregarComentario"
           />
         </div>
@@ -147,7 +148,7 @@
             placeholder="Seleccionar Responsables"
             emptyMessage="No se encontraron resultados"
             :filter="true"
-            :filterFields="['fullName', 'dni', 'employeeNumber']"
+            :filterFields="['nombre', 'apellido', 'dni', 'employeeNumber']"
             class="multiselect-custom"
             style="width: 100% !important"
           >
@@ -157,7 +158,7 @@
                 v-for="option of slotProps.value"
                 :key="option.id"
               >
-                {{ option.fullName }}
+                {{ option.apellido }} {{ option.nombre }}
               </span>
               <template v-if="!slotProps.value || slotProps.value.length === 0">
                 Seleccionar Responsables
@@ -166,7 +167,7 @@
             <template #option="slotProps">
               <div class="country-item">
                 <div>
-                  {{ slotProps.option.fullName }} - {{ slotProps.option.dni }}
+                  {{ slotProps.option.apellido }} {{ slotProps.option.nombre }} - {{ slotProps.option.dni }}
                 </div>
               </div>
             </template>
@@ -407,7 +408,7 @@ export default {
 
 <style>
 .header {
-  background-color: #0388e5;
+  background-color: #E6E7E8;
   color: black;
 }
 .header:first-child {
@@ -419,7 +420,7 @@ export default {
   border-bottom-right-radius: 5px;
 }
 .items {
-  background-color: lightskyblue;
+  background-color: white;
   border-left: 2px solid black;
   border-right: 2px solid black;
   padding: 5px;
@@ -435,9 +436,9 @@ export default {
   border-bottom-right-radius: 5px;
 }
 .itemValue {
-  background-color: #0b7ad1;
+  background-color: white;
   text-transform: capitalize;
-  color: whitesmoke;
+  color: black;
   font-size: 1.2em;
   border-radius: 5px;
   margin: 5px;

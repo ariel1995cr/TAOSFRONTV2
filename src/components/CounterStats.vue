@@ -1,6 +1,6 @@
 <template>
   <div class="p-col-12 p-lg-4">
-    <div class="card summary">
+    <div class="card summary" style="background-color: #edf0f5">
       <span class="title">{{ title }}</span>
       <span class="detail">{{ detail }}</span>
       <span class="count visitors">{{ count }}</span>

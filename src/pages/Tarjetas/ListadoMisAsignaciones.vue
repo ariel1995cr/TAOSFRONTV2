@@ -62,7 +62,7 @@ export default {
     Calendar,
   },
   setup() {
-    const { listadoTarjetas, state } = TarjetasService();
+    const { listadoMisAsignaciones, state } = TarjetasService();
 
     onMounted(() => {
       loading.value = true;
@@ -103,7 +103,7 @@ export default {
 
     const loadLazyData = async () => {
       loading.value = true;
-      await listadoTarjetas({lazyEvent: JSON.stringify( lazyParams.value )}, state.cards.first_page);
+      await listadoMisAsignaciones({lazyEvent: JSON.stringify( lazyParams.value )}, state.cards.first_page);
       customers.value = state.cards.data;
       console.log(state.cards);
       totalRecords.value  = state.cards.total;

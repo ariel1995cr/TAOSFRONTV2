@@ -4,17 +4,18 @@
     <ProgressSpinner />
   </div>
   <div class="p-grid p-jc-center p-ai-center vertical-container" v-else>
+    <ConfirmPopup></ConfirmPopup>
     <div class="p-col-12 p-lg-10">
       <Toolbar>
         <template #left>
-          <Button label="Guardar" icon="pi pi-check" class="p-mr-2" />
+          <Button label="Guardar" @click="guardarFormatoTarjeta" icon="pi pi-check" class="p-mr-2" />
         </template>
 
         <template #right>
           <Button
             label="Agregar grupo"
             icon="pi pi-plus"
-            class="p-mr-2 p-button-outlined"
+            class="p-mr-2 p-button-outlined p-button-secondary"
             @click="openModalGrupo"
           />
         </template>
@@ -26,6 +27,11 @@
       >
         <div class="p-col-12 headerCategorias p-text-center">
           <span>{{ categorias.name }}</span>
+          <i
+              @click="confirmarEliminar(categorias.id)"
+              class="pi pi-minus-circle p-ml-2"
+              v-tooltip="'Eliminar grupo'"
+          ></i>
           <i
             class="pi pi-plus-circle p-ml-2"
             v-tooltip="'Agregar campo'"
@@ -222,7 +228,8 @@ import Toolbar from "primevue/toolbar";
 import ProgressSpinner from "primevue/progressspinner";
 import { useToast } from "primevue/usetoast";
 import Dialog from "primevue/dialog";
-
+import ConfirmPopup from 'primevue/confirmpopup';
+import { useConfirm } from "primevue/useconfirm";
 export default {
   components: {
     InputText,
@@ -234,17 +241,32 @@ export default {
     Toolbar,
     ProgressSpinner,
     Dialog,
+    ConfirmPopup,
   },
   setup() {
-    const { ObtenerCategorias, state } = TarjetasService();
+    const { ObtenerCategorias, guardarFormatoTarjeta,state, eliminarCategoria } = TarjetasService();
     const { desactivarItem, activarItem, agregarItem } = ItemService();
     const { agregarCategoria, allCategoriesWithOutItem } = CategoryService();
+    const confirm = useConfirm();
+
+    const confirmarEliminar = (categoriaId) => {
+      confirm.require({
+        target: event.currentTarget,
+        message: 'Esta seguro que quiere eliminar el grupo? Se perdera información en las tarjetas ya creadas.',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          eliminarCategoria(categoriaId)
+        },
+        reject: () => {
+          //callback to execute when user rejects the action
+        }
+      });
+    };
 
     const tipoCampos = ref([
       "checkbox",
       "date",
       "email",
-      "file",
       "month",
       "number",
       "radio",
@@ -398,6 +420,8 @@ export default {
       closeModalNuevoItem,
       saveItem,
       errores,
+      guardarFormatoTarjeta,
+      confirmarEliminar
     };
   },
 };
@@ -406,7 +430,7 @@ export default {
 .headerCategorias {
   background-color: lightgrey;
   margin-bottom: 0px;
-  border-bottom: 2px solid skyblue;
+  border-bottom: 2px solid #0388E5;
 }
 .borderItems {
   border-bottom: 2px solid lightgrey;

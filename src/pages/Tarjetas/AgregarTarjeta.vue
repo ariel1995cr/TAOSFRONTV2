@@ -1,5 +1,10 @@
 <template>
   <div class="p-grid">
+    <div class="p-col-12">
+      <img height="250" width="250" :src="imagenPreview"  v-if="imagenPreview"/>
+      <br>
+      <input type="file" id="imagen" @change="manejoImagen"/>
+    </div>
     <div
       class="p-col-12 p-lg-5 p-m-1 categoria"
       v-for="categorias in state.categorias"
@@ -50,11 +55,12 @@
             :type="item.tipo_campo"
             v-model="item.model"
           />
+          <br />
           <img
             v-if="item.image"
-            :src="item.image.url"
+            :src="item.image"
             alt=""
-            style="max-width: 100%;width: 250px; object-fit: cover"
+            style="max-width: 100%; width: 250px; object-fit: cover"
           />
         </div>
 
@@ -84,7 +90,7 @@
       <Button
         label="Agregar Tarjeta"
         @click="enviarTarjeta"
-        class="p-button-outlined"
+        class="p-button-outlined p-button-secondary"
       />
     </div>
     <Toast />
@@ -104,7 +110,7 @@ import RadioButton from "primevue/radiobutton";
 import { useToast } from "primevue/usetoast";
 import { defineComponent } from "vue";
 import Toast from "primevue/toast";
-
+import router from "../../router/index";
 export default defineComponent({
   components: {
     Checkbox,
@@ -125,22 +131,43 @@ export default defineComponent({
       longitud: null,
     });
 
+    let imagen = reactive(null);
+    let imagenPreview = ref("");
+
     const onFilePicked = async (item) => {
-      const file = event.target.files[0];
-      item.image = file;
-      const reader = new FileReader();
-      reader.onloadend = await function() {
-        item.image.base64 = reader.result;
-      };
-      item.image.url = URL.createObjectURL(file);
-      URL.revokeObjectURL(file);
-      console.log(item.image);
+      if (event.target.files.length > 0) {
+        const file = event.target.files[0];
+        item.nombreImagen = file.name;
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          item.image = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        item.image = null;
+      }
     };
+
+    const manejoImagen = async (event) =>{
+      imagen = event.target.files;
+      if(imagen && imagen[0]){
+        let reader = new FileReader();
+        reader.onload = e =>{
+          imagenPreview.value = e.target.result;
+        }
+        reader.readAsDataURL(imagen[0]);
+      }else{
+        imagenPreview.value = null;
+        imagen = null;
+      }
+    }
 
     onMounted(async () => {
       loading.value = true;
       await ObtenerCategorias();
       loading.value = false;
+
+      console.log(router);
 
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -149,6 +176,7 @@ export default defineComponent({
         });
       } else {
         /* la geolocalización NO está disponible */
+        console.log("Geolocalizacion no disponible");
       }
     });
 
@@ -174,8 +202,9 @@ export default defineComponent({
         return;
       }
 
-      let response = await guardarTarjeta(state, coords);
+      let response = await guardarTarjeta(state, coords, imagen);
       if (response.status == 200) {
+        router.push({ name: "Dashboard.index" });
         toast.add({
           severity: "success",
           summary: "Tarjeta creada.",
@@ -193,6 +222,9 @@ export default defineComponent({
       enviarTarjeta,
       onFilePicked,
       coords,
+      imagen,
+      manejoImagen,
+      imagenPreview
     };
   },
 });
@@ -200,12 +232,12 @@ export default defineComponent({
 
 <style>
 .categoria {
-  background-color: lightgray;
+  background-color: #E6E7E8;
   border: 1px solid black;
   border-radius: 5px;
 }
 .categoria:hover {
-  background-color: lightskyblue;
+  background-color: white;
 }
 hr.hr1 {
   border-top: 1px solid black;
@@ -214,5 +246,10 @@ hr.hr1 {
 }
 .requerido {
   color: red;
+}
+
+.p-highlight{
+  border-color: red !important;
+  background: red !important;
 }
 </style>

@@ -28,9 +28,14 @@
       Cargando usuarios. Espere por favor.
     </template>
     <Column
-      field="fullName"
-      header="NOMBRE Y APELLIDO"
+      field="nombre"
+      header="NOMBRE"
       :sortable="true"
+    ></Column>
+    <Column
+        field="apellido"
+        header="APELLIDO"
+        :sortable="true"
     ></Column>
     <Column field="employeeNumber" header="NUMERO DE EMPLEADO" :sortable="true">
       <template #body="slotProps">
@@ -61,18 +66,32 @@
   </DataTable>
   <Dialog
     :header="titleModal"
-    v-model:visible="showModal"
+    v-model:visible="stateUser.showModal"
     :style="{ width: '50vw' }"
     :modal="true"
   >
     <div class="p-grid">
       <div class="p-field p-col-12 p-lg-6">
-        <label for="nombreCompleto">Nombre completo</label>
+        <label for="Nombre">Nombre</label>
         <InputText
-          v-model.trim="usuarioSeleccionado.fullName"
-          id="nombreCompleto"
+          v-model.trim="usuarioSeleccionado.nombre"
+          id="Nombre"
           type="text"
         />
+        <div style="color: red" v-if="stateUser.responseError?.nombre">
+          {{stateUser.responseError.nombre[0]}}
+        </div>
+      </div>
+      <div class="p-field p-col-12 p-lg-6">
+        <label for="Apellido">Apellido</label>
+        <InputText
+            v-model.trim="usuarioSeleccionado.apellido"
+            id="Apellido"
+            type="text"
+        />
+        <div style="color: red" v-if="stateUser.responseError?.apellido">
+          {{stateUser.responseError.apellido[0]}}
+        </div>
       </div>
       <div class="p-field p-col-12 p-lg-6">
         <label for="DNI">DNI</label>
@@ -81,6 +100,9 @@
           id="DNI"
           type="text"
         />
+        <div style="color: red" v-if="stateUser.responseError?.dni">
+          {{stateUser.responseError.dni[0]}}
+        </div>
       </div>
       <div class="p-field p-col-12 p-lg-6">
         <label for="numeroEmpleado">Numero de empleado</label>
@@ -89,6 +111,9 @@
           id="numeroEmpleado"
           type="text"
         />
+        <div style="color: red" v-if="stateUser.responseError?.employeeNumber">
+          {{stateUser.responseError.employeeNumber[0]}}
+        </div>
       </div>
       <div class="p-field p-col-12 p-lg-6">
         <label for="email">Email</label>
@@ -97,17 +122,23 @@
           id="email"
           type="text"
         />
+        <div style="color: red" v-if="stateUser.responseError?.email">
+          {{stateUser.responseError.email[0]}}
+        </div>
       </div>
       <div class="p-field p-col-12 p-lg-6">
-        <label for="ciudadTrabajo">Trabaja en la ciudad</label>
-        <CascadeSelect
+        <label for="ciudadTrabajo">Vive en la ciudad</label>
+        <br />
+        <AutoComplete
+          style="width: 100%"
           v-model="usuarioSeleccionado.city"
-          :options="stateUbication.ciudades"
-          optionLabel="name"
-          optionGroupLabel="name"
-          :optionGroupChildren="['provincias', 'ciudades']"
-          style="minWidth: 100%"
+          :suggestions="stateUbication.ciudades"
+          @complete="changeDondeVive($event)"
+          field="ciudades"
         />
+        <div style="color: red" v-if="stateUser.responseError?.city">
+          {{stateUser.responseError.city[0]}}
+        </div>
       </div>
       <div class="p-field p-col-12 p-lg-6">
         <label for="rol">Rol</label>
@@ -115,9 +146,51 @@
           v-model="usuarioSeleccionado.rol"
           :options="stateUser.roles"
           optionLabel="nombre"
-          placeholder="Seleccionar Rol"
+          placeholder="Seleccionar rol"
           style="width: 100%"
         />
+      </div>
+      <div class="p-field p-col-12 p-lg-6">
+        <label for="rol">Trabaja en</label>
+        <Dropdown
+          v-model="usuarioSeleccionado.work_city_id"
+          :options="stateLocation.locaciones"
+          optionLabel="id"
+          :filter="true"
+          :filterFields="[
+            'id',
+            'city.name',
+            'city.state.name',
+            'city.state.country.name',
+          ]"
+          placeholder="Seleccionar ciudad de trabajo"
+          style="width: 100%"
+        >
+          <template #value="slotProps">
+            <div class="p-dropdown-car-value" v-if="slotProps.value">
+              <span
+                >{{ slotProps.value.id }} - {{ slotProps.value.city.name }},
+                {{ slotProps.value.city.state.name }},
+                {{ slotProps.value.city.state.country.name }}</span
+              >
+            </div>
+            <span v-else>
+              {{ slotProps.placeholder }}
+            </span>
+          </template>
+          <template #option="slotProps">
+            <div class="p-dropdown-car-option">
+              <span
+                >{{ slotProps.option.id }} - {{ slotProps.option.city.name }},
+                {{ slotProps.option.city.state.name }},
+                {{ slotProps.option.city.state.country.name }}</span
+              >
+            </div>
+          </template>
+        </Dropdown>
+        <div style="color: red" v-if="stateUser.responseError?.work_city_id">
+          {{stateUser.responseError.work_city_id[0]}}
+        </div>
       </div>
     </div>
     <template #footer>
@@ -139,6 +212,7 @@
 </template>
 
 <script>
+import AutoComplete from "primevue/autocomplete";
 import DataTable from "primevue/datatable";
 import Dialog from "primevue/dialog";
 import Column from "primevue/column";
@@ -147,12 +221,14 @@ import InputText from "primevue/inputtext";
 import CascadeSelect from "primevue/cascadeselect";
 import UserService from "../../services/UserService";
 import UbicationService from "../../services/UbicationService";
+import LocationService from "../../services/LocationService";
 import { onMounted, ref } from "vue";
 import ProgressSpinner from "primevue/progressspinner";
 import Dropdown from "primevue/dropdown";
 import { useRouter, useRoute } from "vue-router";
 export default {
   components: {
+    AutoComplete,
     Column,
     DataTable,
     ProgressSpinner,
@@ -172,7 +248,13 @@ export default {
     const {
       ObtenerListadoCiudades,
       state: stateUbication,
+      buscarCiudad,
     } = UbicationService();
+    const {
+      obtenerLocacionesPorCiudad,
+      obtenerLocaciones,
+      state: stateLocation,
+    } = LocationService();
     const dt = ref(null);
     let loading = ref(true);
     let showModal = ref(false);
@@ -196,6 +278,7 @@ export default {
       await obtenerUsuarios(route.query.q);
       await ObtenerListadoCiudades();
       await obtenerRoles();
+      await obtenerLocaciones();
       stateUser.loading = false;
     });
 
@@ -203,24 +286,35 @@ export default {
       modoModal.value = modo;
       if (modo == "editar") {
         usuarioSeleccionado.value = { ...user };
-        let { country, state, ...city } = user.city;
-        usuarioSeleccionado.value.city = city;
-        showModal.value = true;
+        //usuarioSeleccionado.value.city = city;
+        usuarioSeleccionado.value.city = {
+          ciudades:
+            user.city.name +
+            ", " +
+            user.city.state.name +
+            " ," +
+            user.city.country.name,
+          city_id: user.city.id,
+        };
+        stateUser.showModal = true;
         titleModal.value = "Editar Usuario";
       }
       if (modo == "crear") {
         usuarioSeleccionado.value = {};
-        showModal.value = true;
+        stateUser.showModal = true;
         titleModal.value = "Crear usuario";
       }
     };
     const cerrarModal = () => {
-      showModal.value = false;
+      stateUser.showModal = false;
+    };
+
+    const changeDondeVive = (event) => {
+      buscarCiudad(event.query);
     };
 
     const updateUser = () => {
       actualizarUsuario(usuarioSeleccionado.value);
-      cerrarModal("");
     };
 
     return {
@@ -238,6 +332,9 @@ export default {
       modoModal,
       actualizarUsuario,
       updateUser,
+      changeDondeVive,
+      obtenerLocacionesPorCiudad,
+      stateLocation,
     };
   },
 };

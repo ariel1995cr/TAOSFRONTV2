@@ -12,68 +12,31 @@
     />
     -
     <div class="p-col-12 p-lg-6">
-      <vue3-chart-js
-        ref="chartRef"
-        :id="dataCategoria.id"
-        :type="dataCategoria.type"
-        :data="dataCategoria.data"
-        :options="options"
-      ></vue3-chart-js>
+      <Chart type="pie" :options="optionsActos" :data="chartDataActos" ref="chartRefDataActos" />
     </div>
     <div class="p-col-12 p-lg-6">
-      <vue3-chart-js
-        ref="chartRef2"
-        :id="dataCategoria2.id"
-        :type="dataCategoria2.type"
-        :data="dataCategoria2.data"
-        :options="dataCategoria2.options"
-        :plugins="dataCategoria2.plugins"
-      ></vue3-chart-js>
+    <Chart type="pie" :options="optionsData" :data="chartData" ref="chartRef" />
     </div>
     <div class="p-col-12 p-lg-6">
-      <vue3-chart-js
-        ref="chartRefReaccionDePersonas"
-        :id="dataReaccionesDePersonas.id"
-        :type="dataReaccionesDePersonas.type"
-        :data="dataReaccionesDePersonas.data"
-        :options="dataReaccionesDePersonas.options"
-      ></vue3-chart-js>
+      <Chart type="line" :options="optionsData2" :data="chartData2" ref="chartRef2" />
     </div>
     <div class="p-col-12 p-lg-6">
-      <vue3-chart-js
-        ref="chartRefEpp"
-        :id="dataEpp.id"
-        :type="dataEpp.type"
-        :data="dataEpp.data"
-        :options="dataEpp.options"
-      ></vue3-chart-js>
+      <Chart type="line" :options="optionsData2" :data="chartDataCards" ref="chartRefDataCards" />
     </div>
     <div class="p-col-12 p-lg-6">
-      <vue3-chart-js
-        ref="chartRefHerryEquip"
-        :id="dataHYE.id"
-        :type="dataHYE.type"
-        :data="dataHYE.data"
-        :options="dataHYE.options"
-      ></vue3-chart-js>
+      <Chart type="bar" :options="optionsDataRDP" :data="chartDataRDP" ref="chartRefDataRDP" />
     </div>
     <div class="p-col-12 p-lg-6">
-      <vue3-chart-js
-        ref="chartRefPOL"
-        :id="dataPOL.id"
-        :type="dataPOL.type"
-        :data="dataPOL.data"
-        :options="dataPOL.options"
-      ></vue3-chart-js>
+      <Chart type="bar" :options="optionsData3" :data="chartDataEPP" ref="chartRefDataEPP" />
     </div>
     <div class="p-col-12 p-lg-6">
-      <vue3-chart-js
-        ref="chartRefPP"
-        :id="dataPP.id"
-        :type="dataPP.type"
-        :data="dataPP.data"
-        :options="dataPP.options"
-      ></vue3-chart-js>
+      <Chart type="bar" :options="optionsData3" :data="chartDataHYE" ref="chartRefDataHYE" />
+    </div>
+    <div class="p-col-12 p-lg-6">
+      <Chart type="bar" :options="optionsData3" :data="chartDataPOL" ref="chartRefDataPOL" />
+    </div>
+    <div class="p-col-12 p-lg-6">
+      <Chart type="bar" :options="optionsData3" :data="chartDataPP" ref="chartRefDataPP" />
     </div>
   </div>
 </template>
@@ -83,221 +46,228 @@ import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import CounterStats from "../../components/CounterStats.vue";
 import DashboardService from "../../services/DashboardService";
 import Vue3ChartJs from "@j-t-mcc/vue3-chartjs";
-
+import Chart from "primevue/chart";
+import ChartJsPluginDataLabels from "chartjs-plugin-labels";
 export default {
   components: {
     CounterStats,
     Vue3ChartJs,
+    Chart,
+    ChartJsPluginDataLabels,
   },
   setup() {
+    const colores = ["#0055E5E","#B22F66", "#00CBCB", "#FF531F", "#FFB02F"];
+    const { ObtenerEstaditica, ObtenerEstaditica2, state } = DashboardService();
     const chartRef = ref(null);
     const chartRef2 = ref(null);
-    const chartRefReaccionDePersonas = ref(null);
-    const chartRefEpp = ref(null);
-    const chartRefHerryEquip = ref(null);
-    const chartRefPOL = ref(null);
-    const chartRefPP = ref(null);
-    const { ObtenerEstaditica, ObtenerEstaditica2, state } = DashboardService();
-    let options = {
-      title: {
+    const chartRefDataRDP = ref(null);
+    const chartRefDataEPP = ref(null);
+    const chartRefDataHYE = ref(null);
+    const chartRefDataPOL = ref(null);
+    const chartRefDataPP = ref(null);
+    const chartRefDataCards = ref(null);
+    const chartRefDataActos = ref(null);
+
+
+    const optionsData = ref({
+      responsive: true,
+      title:{
         display: true,
-        text: "Estadistica por categorias",
+        text: "Estadisticas por categorias",
       },
-      plugins: {
-        labels: {
-          render: "percentage",
+      plugins:{
+        labels:{
+          render: 'percentage',
+          fontColor: '#FFF',
+          fontSize: 18,
+          showActualPercentages: true,
         },
-      },
-    };
+      }
+    });
 
-    let dataCategoria = reactive({
-      id: "doughnut",
-      type: "doughnut",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#4663e8",
-              "#667dec",
-              "#8497f0",
-              "#a9b7f5",
-              "#bac5f8",
-            ],
-            data: [],
-          },
-        ],
+    const optionsActos = ref({
+      responsive: true,
+      title:{
+        display: true,
+        text: "Estadisticas por categorias",
+      },
+      plugins:{
+        labels:{
+          render: 'percentage',
+          fontColor: '#FFF',
+          fontSize: 18,
+          showActualPercentages: true,
+        },
+      }
+    });
+
+    const optionsData2 = ref({
+      responsive: true,
+      scales:{
+        xAxes:[{
+          display: true,
+          offset: true,
+          ticks:{
+            autoSkip: false,
+            maxRotation: 10,
+          }}]
+      },
+      title:{
+        display: true,
+        text: "Estadisticas por categorias",
       },
     });
 
-    let dataCategoria2 = reactive({
-      id: "horizontalBar",
-      type: "horizontalBar",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#4663e8",
-              "#667dec",
-              "#8497f0",
-              "#a9b7f5",
-              "#bac5f8",
-            ],
-            data: [],
-            label: "",
-          },
-        ],
+    const optionsData3 = ref({
+      responsive: true,
+      scales:{
+        xAxes:[{
+          display: true,
+          offset: true,
+          ticks:{
+            autoSkip: false,
+            maxRotation: 10,
+          }}],
       },
-      plugins: [
+      title:{
+        display: true,
+        text: "Estadisticas por categorias",
+      },
+      plugins:{
+        labels:{
+          render: 'percentage',
+          fontColor: '#FFF',
+          fontSize: 18,
+          showActualPercentages: true,
+        },
+      }
+    });
+
+    const chartDataCards = ref({
+      labels: [],
+      datasets: [
         {
-          labels: {
-            render: "percentage",
-            fontSize: 20,
-          },
-        },
-      ],
-      options: {
-        title: {
-          display: true,
-          text: "Estadistica por categorias",
-        },
-      },
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
     });
 
-    let dataReaccionesDePersonas = reactive({
-      id: "bar",
-      type: "bar",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#4663e8",
-              "#667dec",
-              "#8497f0",
-              "#a9b7f5",
-              "#bac5f8",
-            ],
-            data: [],
-            label: "",
-          },
-        ],
-      },
-      options: {
-        title: {
-          display: true,
-          text: "Reacciones de Personas",
-        },
-      },
+    const chartDataActos = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
     });
 
-    let dataEpp = reactive({
-      id: "barEpp",
-      type: "bar",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#4663e8",
-              "#667dec",
-              "#8497f0",
-              "#a9b7f5",
-              "#bac5f8",
-            ],
-            data: [],
-            label: "",
-          },
-        ],
-      },
-      options: {
-        title: {
-          display: true,
-          text: "EQUIPO DE PROTECCION PERSONAL",
-        },
-      },
+
+    const chartData = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
     });
 
-    let dataHYE = reactive({
-      id: "barEpp",
-      type: "bar",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#4663e8",
-              "#667dec",
-              "#8497f0",
-              "#a9b7f5",
-              "#bac5f8",
-            ],
-            data: [],
-            label: "",
-          },
-        ],
-      },
-      options: {
-        title: {
-          display: true,
-          text: "HERRAMIENTAS Y EQUIPO",
-        },
-      },
+    const chartData2 = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
     });
 
-    let dataPOL = reactive({
-      id: "barEpp",
-      type: "bar",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#4663e8",
-              "#667dec",
-              "#8497f0",
-              "#a9b7f5",
-              "#bac5f8",
-            ],
-            data: [],
-            label: "",
-          },
-        ],
-      },
-      options: {
-        title: {
+    const optionsDataRDP = ref({
+      responsive: true,
+      scales:{
+        xAxes:[{
           display: true,
-          text: "PROCEDIMIENTOS, ORDEN Y LIMPIEZA",
-        },
+          offset: true,
+          ticks:{
+            autoSkip: false,
+            maxRotation: 20,
+            fontSize: 10,
+          }}],
       },
+      title:{
+        display: true,
+        text: "Estadisticas por categorias",
+      },
+      plugins:{
+        labels:{
+          render: 'percentage',
+          fontColor: '#000',
+          fontSize: 18,
+          showActualPercentages: true,
+        },
+      }
     });
 
-    let dataPP = reactive({
-      id: "barEpp",
-      type: "bar",
-      data: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#4663e8",
-              "#667dec",
-              "#8497f0",
-              "#a9b7f5",
-              "#bac5f8",
-            ],
-            data: [],
-            label: "",
-          },
-        ],
-      },
-      options: {
-        title: {
-          display: true,
-          text: "POSICIONES DE LAS PERSONAS",
-        },
-      },
+
+    const chartDataRDP = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
+    });
+
+    const chartDataEPP = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
+    });
+
+    const chartDataHYE = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
+    });
+
+    const chartDataPOL = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
+    });
+
+    const chartDataPP = ref({
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          backgroundColor: colores,
+          hoverBackgroundColor: colores,
+        }
+      ]
     });
 
     onMounted(async () => {
@@ -306,56 +276,88 @@ export default {
 
     onBeforeMount(async () => {
       let response = await ObtenerEstaditica2();
-      dataCategoria.data.labels = response.dataCategorias.labels;
-      dataCategoria.data.datasets[0].data = response.dataCategorias.value;
-      dataCategoria2.data.labels = response.dataCategorias.labels;
-      dataCategoria2.data.datasets[0].data = response.dataCategorias.value;
-      dataReaccionesDePersonas.data.labels =
-        response.dataReaccionesDePersonas.labels;
-      dataReaccionesDePersonas.data.datasets[0].data =
-        response.dataReaccionesDePersonas.value;
-      dataEpp.data.labels = response.dataEpp.labels;
-      dataEpp.data.datasets[0].data = response.dataEpp.value;
+      chartData.value.labels = response.dataCategorias.labels;
+      chartData.value.datasets[0].data = response.dataCategorias.value;
 
-      dataHYE.data.labels = response.dataHerryEquip.labels;
-      dataHYE.data.datasets[0].data = response.dataHerryEquip.value;
+      chartData2.value.labels = response.dataCategorias.labels;
+      chartData2.value.datasets[0].data = response.dataCategorias.value;
+      chartData2.value.datasets[0].label = 'Estadistica por categoria'
+      chartData2.value.datasets[0].fill = false
+      chartData2.value.datasets[0].borderColor = '#0055E5E'
 
-      dataPOL.data.labels = response.dataPOL.labels;
-      dataPOL.data.datasets[0].data = response.dataPOL.value;
 
-      dataPP.data.labels = response.dataPP.labels;
-      dataPP.data.datasets[0].data = response.dataPP.value;
+      chartDataRDP.value.labels = response.dataReaccionesDePersonas.labels;
+      chartDataRDP.value.datasets[0].data = response.dataReaccionesDePersonas.value;
+      chartDataRDP.value.datasets[0].label = 'Reacciones de personas';
 
-      chartRef.value.update();
-      chartRef2.value.update();
-      console.log(chartRef2.value);
-      chartRefReaccionDePersonas.value.update();
-      chartRefEpp.value.update();
-      chartRefHerryEquip.value.update();
-      chartRefPOL.value.update();
-      chartRefPP.value.update();
+      chartDataEPP.value.labels = response.dataEpp.labels;
+      chartDataEPP.value.datasets[0].data = response.dataEpp.value;
+      chartDataEPP.value.datasets[0].label = 'EQUIPO DE PROTECCION PERSONAL';
+
+      chartDataHYE.value.labels = response.dataHerryEquip.labels;
+      chartDataHYE.value.datasets[0].data = response.dataHerryEquip.value;
+      chartDataHYE.value.datasets[0].label = 'Herramientas y Equipo';
+
+
+      chartDataPOL.value.labels = response.dataPOL.labels;
+      chartDataPOL.value.datasets[0].data = response.dataPOL.value;
+      chartDataPOL.value.datasets[0].label = 'PROCEDIMIENTOS, ORDEN Y LIMPIEZA';
+
+      chartDataPP.value.labels = response.dataPOL.labels;
+      chartDataPP.value.datasets[0].data = response.dataPOL.value;
+      chartDataPP.value.datasets[0].label = 'POSICIONES DE LAS PERSONAS';
+
+      chartDataCards.value.labels = response.Cards.labels;
+      chartDataCards.value.datasets[0].data = response.Cards.value;
+      chartDataCards.value.datasets[0].label = 'Estadistica cards mensuales'
+      chartDataCards.value.datasets[0].fill = false
+      chartDataCards.value.datasets[0].borderColor = '#0055E5E'
+
+
+      chartDataActos.value.labels = response.Actos.labels;
+      chartDataActos.value.datasets[0].data = response.Actos.value;
+
+
+      chartRef.value.refresh();
+      chartRef2.value.refresh();
+      chartRefDataCards.value.refresh();
+      chartRefDataRDP.value.refresh();
+      chartRefDataEPP.value.refresh();
+      chartRefDataHYE.value.refresh();
+      chartRefDataPOL.value.refresh();
+      chartRefDataPP.value.refresh();
+      chartRefDataActos.value.refresh();
     });
 
     return {
       state,
-      dataCategoria,
-      dataCategoria2,
-      dataReaccionesDePersonas,
-      dataEpp,
+      chartData,
+      chartData2,
       chartRef,
       chartRef2,
-      chartRefReaccionDePersonas,
-      chartRefPOL,
-      options,
-      chartRefEpp,
-      chartRefHerryEquip,
-      dataHYE,
-      dataPOL,
-      dataPP,
-      chartRefPP,
+      optionsData,
+      optionsData2,
+      optionsDataRDP,
+      chartDataRDP,
+      chartDataEPP,
+      chartRefDataEPP,
+      optionsData3,
+      chartDataHYE,
+      chartRefDataHYE,
+      chartRefDataPOL,
+      chartDataPOL,
+      chartRefDataPP,
+      chartDataPP,
+      chartRefDataRDP,
+      chartDataCards,
+      chartRefDataCards,
+      optionsActos,
+      chartDataActos,
+      chartRefDataActos
     };
   },
 };
 </script>
 
 <style></style>
+

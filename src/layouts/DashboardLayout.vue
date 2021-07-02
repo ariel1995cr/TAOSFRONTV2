@@ -1,5 +1,5 @@
 <template>
-  <div :class="containerClass" @click="onWrapperClick">
+  <div :class="containerClass" class="backgroundColor" @click="onWrapperClick">
     <AppTopBar @menu-toggle="onMenuToggle" />
 
     <transition name="layout-sidebar">
@@ -48,7 +48,7 @@ export default {
         { label: "Dashboard", icon: "pi pi-fw pi-home", to: "/" },
         {
           label: "Tarjetas",
-          icon: "pi pi-fw pi-sitemap",
+          icon: "pi pi-fw pi-pencil",
           items: [
             {
               label: "Agregar",
@@ -56,55 +56,59 @@ export default {
               to: "/dashboard/Tarjetas/Agregar",
             },
             {
-              label: "Gestionar",
-              icon: "pi pi-fw pi-check-square",
-              to: "/dashboard/Tarjetas/Gestionar",
+              label: "Listado",
+              icon: "pi pi-fw pi-list",
+              to: { path: "/dashboard/Tarjetas", query: { q: "" } },
             },
             {
-              label: "Listado",
-              icon: "pi pi-fw pi-bookmark",
-              to: { path: "/dashboard/Tarjetas", query: { q: "" } },
+              label: "Mis tarjetas",
+              icon: "pi pi-fw pi-list",
+              to: { path: "/dashboard/MisTarjetas", query: { q: "" } },
+            },
+            {
+              label: "Mis asignaciones",
+              icon: "pi pi-fw pi-list",
+              to: { path: "/dashboard/MisAsignaciones", query: { q: "" } },
             },
           ],
         },
         {
           label: "Usuarios",
-          icon: "pi pi-fw pi-globe",
+          icon: "pi pi-fw pi-user",
           items: [
             {
-              label: "Listar",
+              label: "Crear",
               icon: "pi pi-fw pi-desktop",
+              to: { path: "/dashboard/Usuarios/crear" },
+            },
+            {
+              label: "Listar",
+              icon: "pi pi-fw pi-list",
               to: { path: "/dashboard/Usuarios", query: { q: "" } },
             },
           ],
         },
         {
           label: "Locaciones",
-          icon: "pi pi-fw pi-search",
+          icon: "pi pi-fw pi-globe",
           items: [
             {
               label: "Listar",
-              icon: "pi pi-fw pi-bookmark",
-              items: [
-                {
-                  label: "Submenu 1.1",
-                  icon: "pi pi-fw pi-bookmark",
-                  items: [
-                    { label: "Submenu 1.1.1", icon: "pi pi-fw pi-bookmark" },
-                    { label: "Submenu 1.1.2", icon: "pi pi-fw pi-bookmark" },
-                    { label: "Submenu 1.1.3", icon: "pi pi-fw pi-bookmark" },
-                  ],
-                },
-              ],
+              icon: "pi pi-fw pi-list",
+              to: { path: "/dashboard/Locaciones" },
             },
           ],
         },
         {
-          label: "Documentation",
-          icon: "pi pi-fw pi-question",
-          command: () => {
-            window.location = "#/documentation";
-          },
+          label: "TAOS",
+          icon: "pi pi-fw pi-sitemap",
+          items: [
+            {
+              label: "Gestionar",
+              icon: "pi pi-fw pi-pencil",
+              to: "/dashboard/Tarjetas/Gestionar",
+            },
+          ],
         },
       ],
     };
@@ -235,6 +239,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@import "./App.scss";
+<style>
+.backgroundColor{
+  background: white;
+}
 </style>

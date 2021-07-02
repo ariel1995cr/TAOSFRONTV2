@@ -16,8 +16,10 @@ import "@fullcalendar/daygrid/main.min.css";
 import "@fullcalendar/timegrid/main.min.css";
 import "./assets/layout/layout.scss";
 import "./assets/layout/flags/flags.css";
-import vueDebounce from "vue-debounce";
 
+import vueDebounce from "vue-debounce";
+import ConfirmationService from "primevue/confirmationservice";
+import PrimeVue from "primevue/config";
 const app = createApp(App);
 
 app.config.globalProperties.$appState = reactive({ inputStyle: "outlined" });
@@ -27,6 +29,8 @@ app.directive("tooltip", Tooltip);
 app.directive("ripple", Ripple);
 app.directive("code", CodeHighlight);
 app.use(vueDebounce);
+app.use(ConfirmationService);
+app.use(PrimeVue);
 app
   .use(router)
   .use(ToastService)
