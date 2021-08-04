@@ -38,7 +38,20 @@
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="Buscar por nombre"/>
         </template>
         <template #body="slotProps">
+          <Avatar :image="slotProps.data.image" shape="circle" v-if="slotProps.data.image"/>
+          <Avatar :label="slotProps.data.apellido.charAt(0)+slotProps.data.nombre.charAt(0)" class="p-mr-2" shape="circle" v-else/>
           {{slotProps.data.apellido}} {{slotProps.data.nombre}}
+        </template>
+      </Column>
+      <Column field="responsables" header="Responsables" >
+        <template #body="slotProps">
+          <span v-if="slotProps.data.responsables.length == 0">No hay responsables.</span>
+          <AvatarGroup class="p-mb-3">
+            <span v-for="responsable in slotProps.data.responsables">
+              <Avatar :image="responsable.image" shape="circle" v-if="responsable.image"/>
+              <Avatar :label="responsable.apellido.charAt(0)+responsable.nombre.charAt(0)" shape="circle" v-else/>
+            </span>
+          </AvatarGroup>
         </template>
       </Column>
     </DataTable>
@@ -53,6 +66,7 @@ import DataTable from "primevue/datatable";
 import InputText from "primevue/inputtext";
 import InputMask from "primevue/inputmask";
 import Calendar from "primevue/calendar";
+import Avatar from "primevue/avatar";
 export default {
   components:{
     Column,
@@ -60,6 +74,7 @@ export default {
     InputText,
     InputMask,
     Calendar,
+    Avatar
   },
   setup() {
     const { listadoTarjetas, state } = TarjetasService();
@@ -118,7 +133,6 @@ export default {
       loadLazyData();
     };
     const onFilter = () => {
-      console.log(filters.value);update:
      lazyParams.value.filters = filters.value ;
       loadLazyData();
     }

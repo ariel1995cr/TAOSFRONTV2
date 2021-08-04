@@ -20,17 +20,25 @@ import "./assets/layout/flags/flags.css";
 import vueDebounce from "vue-debounce";
 import ConfirmationService from "primevue/confirmationservice";
 import PrimeVue from "primevue/config";
-const app = createApp(App);
 
+const app = createApp(App);
 app.config.globalProperties.$appState = reactive({ inputStyle: "outlined" });
 app.config.globalProperties.$primevue = reactive({ ripple: true });
 
 app.directive("tooltip", Tooltip);
 app.directive("ripple", Ripple);
 app.directive("code", CodeHighlight);
+
 app.use(vueDebounce);
 app.use(ConfirmationService);
-app.use(PrimeVue);
+app.use(PrimeVue,{
+    zIndex: {
+        modal: 1100,        //dialog, sidebar
+        overlay: 1000,      //dropdown, overlaypanel
+        menu: 1000,         //overlay menus
+        tooltip: 1100       //tooltip
+    }
+});
 app
   .use(router)
   .use(ToastService)

@@ -42,14 +42,14 @@
 
     <br />
     <Button
-      @click="listadoTarjetas(route.query.q, state.cards.prev_page)"
+      @click="listadoMisTarjetas(route.query.q, state.cards.prev_page)"
       v-if="state.cards.prev_page"
     >
       Anterior
     </Button>
     <Button
       class="p-ml-2"
-      @click="listadoTarjetas(route.query.q, state.cards.next_page)"
+      @click="listadoMisTarjetas(route.query.q, state.cards.next_page)"
       v-if="state.cards.next_page"
     >
       Siguiente
@@ -99,7 +99,8 @@ export default {
 
     const listarTarjetas = async () => {
       loading.value = true;
-      let resp = await listadoMisTarjetas(route.query.q, state.cards.first_page);
+      console.log();
+      let resp = await listadoMisTarjetas(route.query.q.length != 0 ? route.query.q : "", state.cards.first_page);
       tarjetas.value = resp;
       loading.value = false;
     };

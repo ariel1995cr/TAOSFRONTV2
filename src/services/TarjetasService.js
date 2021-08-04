@@ -74,7 +74,6 @@ export default function dashboardService() {
   };
 
   const listadoTarjetas = async (params, url = state.cards.first_page) => {
-      console.log(params);
 
     if (url == "") {
       url = `${urlRequest}api/cardv2?page=1`;
@@ -99,10 +98,8 @@ export default function dashboardService() {
   };
 
     const listadoMisTarjetas = async (params, url = state.cards.first_page) => {
-        console.log(params);
-
         if (url == "") {
-            url = `${urlRequest}api/cardv2?page=1`;
+            url = `${urlRequest}api/myCards?page=1`;
         }
         let response = await instanceTaos
             .get(`${url}&q=${JSON.stringify(params)}`)
@@ -123,12 +120,12 @@ export default function dashboardService() {
         return response;
     };
 
-  const listadoMisAsignaciones = async (query, url = state.cards.first_page) => {
+  const listadoMisAsignaciones = async (params, url = state.cards.first_page) => {
     if (url == "") {
       url = `${urlRequest}api/getMyAssignments?page=1`;
     }
     let response = await instanceTaos
-        .get(`${url}&q=${query}`)
+        .get(`${url}&q=${JSON.stringify(params)}`)
         .then((resp) => {
           state.cards.data = resp.data.data;
           state.cards.current_page = resp.data.current_page;

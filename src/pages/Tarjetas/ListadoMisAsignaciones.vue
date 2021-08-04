@@ -118,7 +118,6 @@ export default {
       loadLazyData();
     };
     const onFilter = () => {
-      console.log(filters.value);update:
      lazyParams.value.filters = filters.value ;
       loadLazyData();
     }

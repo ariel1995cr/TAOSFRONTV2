@@ -6,20 +6,16 @@
   <div class="p-grid p-jc-center p-ai-center vertical-container" v-else>
     <ConfirmPopup></ConfirmPopup>
     <div class="p-col-12 p-lg-10">
-      <Toolbar>
-        <template #left>
-          <Button label="Guardar" @click="guardarFormatoTarjeta" icon="pi pi-check" class="p-mr-2" />
-        </template>
-
-        <template #right>
-          <Button
-            label="Agregar grupo"
-            icon="pi pi-plus"
-            class="p-mr-2 p-button-outlined p-button-secondary"
-            @click="openModalGrupo"
-          />
-        </template>
-      </Toolbar>
+      <div>
+        <a href="#" @click="guardarFormatoTarjeta" class="float">
+          <i class="my-float pi pi-save" style="fontSize: 1.5rem">
+          </i>
+        </a>
+        <a href="#" @click="openModalGrupo" class="float2">
+          <i class="my-float pi pi-plus" style="fontSize: 1.5rem">
+          </i>
+        </a>
+      </div>
       <div
         class="card"
         v-for="categorias in state.categorias"
@@ -449,5 +445,37 @@ export default {
 .p-dialog-mask {
   position: absolute;
   pointer-events: auto; /* (optional, doesn't cover whole area when scroll presents) */
+}
+
+.float{
+  position:fixed;
+  width:60px;
+  height:60px;
+  bottom:40px;
+  right:40px;
+  background-color: red;
+  color:#FFF;
+  border-radius:50px;
+  text-align:center;
+  box-shadow: 2px 2px 3px #999;
+  z-index:99;
+}
+
+.float2{
+  position:fixed;
+  width:60px;
+  height:60px;
+  bottom:40px;
+  right:110px;
+  background-color: lightgrey;
+  color:#FFF;
+  border-radius:50px;
+  text-align:center;
+  box-shadow: 2px 2px 3px #999;
+  z-index:99;
+}
+
+.my-float{
+  margin-top:22px;
 }
 </style>

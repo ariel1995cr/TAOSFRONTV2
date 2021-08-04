@@ -6,97 +6,94 @@
   <div v-else>
     <div class="p-grid">
       <div class="p-col-12 p-lg-4">
-        <img height="250" width="250" :src="'/'+tarjeta.imagen"  v-if="tarjeta.imagen"/>
-        <div class="p-col-12">
-          <span class="p-text-bold">Numero de tarjeta:</span> {{ tarjeta.id }}
-          <br />
-          <span class="p-text-bold">Creada por:</span> {{tarjeta.apellido}} {{ tarjeta.nombre }}
-          <br />
-          <span class="p-text-bold">En la fecha:</span> {{ tarjeta.created_at }}
-          <br />
-          <span class="p-text-bold">Estado actual:</span>
-          {{ tarjeta.type_state_id }}
-          <Button
-            :label="tarjeta.type_state_id == 'Abierto' ? 'Cerrar tarjeta' : 'Abrir tarjeta'"
-            class="p-button-outlined p-button-secondary p-col-12 p-mt-2"
-            @click="cambiarEstadoTarjeta"
-          />
+        <div class="p-grid">
+          <div class="p-col-4">
+            <img style="border-radius: 15px; width: 100%" :src="tarjeta.image"  v-if="tarjeta.image"/>
+          </div>
+         <div class="p-col-8">
+           <span class="p-text-bold">Numero de tarjeta:</span> {{ tarjeta.id }}
+           <br />
+           <span class="p-text-bold">Creada por:</span> {{tarjeta.apellido}} {{ tarjeta.nombre }}
+           <br />
+           <span class="p-text-bold">En la fecha:</span> {{ tarjeta.created_at }}
+           <br />
+           <span class="p-text-bold">Estado actual:</span>
+           {{ tarjeta.type_state_id }}
+           <p class="p-text-bold">Calificar Tarjeta</p>
+           <Rating v-model="score" @change="darPuntaje" />
+           <Button
+               :label="tarjeta.type_state_id == 'Abierto' ? 'Cerrar tarjeta' : 'Abrir tarjeta'"
+               class="p-button-outlined p-button-secondary p-col-12 p-mt-2"
+               @click="cambiarEstadoTarjeta"
+           />
+         </div>
         </div>
         <div class="p-col-12">
           <div
-            class="p-col-12 header"
+            class="p-col-12"
             v-for="categorias in tarjeta.categorias"
             :key="categorias.id"
           >
-            {{ categorias.name }}
-            <div
-              class="items"
-              v-for="item in categorias.item"
-              :key="item.descripcion"
-            >
-              <span class="p-text-bold">{{ item.descripcion }}:</span>
-              {{ item.value }}
-            </div>
+            <table class="p-col-12" cellspacing="0" cellpadding="0">
+              <thead>
+                <tr>
+                  <th colspan="2" style="text-align: left; background-color: red; padding: 8px; color: white">{{ categorias.name }}</th>
+                </tr>
+              </thead>
+             <tr v-for="item in categorias.item"
+                 :key="item.descripcion">
+               <td>{{item.descripcion}}</td>
+               <td style="text-align: right">{{item.value}}</td>
+             </tr>
+            </table>
           </div>
         </div>
       </div>
       <div class="p-col-12 p-lg-4">
-        <GoogleMap
-          ref="mapRef"
-          id="map"
-          class="map"
-          api-key="AIzaSyBxvS42el_I328QCEwig5Vx1Lj8gVBXT4Q"
-          style="width: 100%; height: 250px"
-          :mapTypeControl="false"
-          :center="center"
-          :zoom="8"
-        >
-          <Marker :options="markerOptions" />
-        </GoogleMap>
-        <div class="p-col-12">
-          <span class="p-text-bold">Calificar Tarjeta</span>
-          <Rating v-model="score" @change="darPuntaje" />
-        </div>
-        <div class="p-col-12" v-if="score">
-          <span class="p-text-bold">Tu puntuación dada es: </span>{{ score }}
-        </div>
-        <div class="p-col-12">
-          <span class="p-text-bold">Listado de Responsables</span>
-          <ul>
-            <li
-              v-for="(responsable, idx) in stateResponsable.responsables"
-              v-bind:key="idx"
-            >
-              {{ responsable.apellido }} {{ responsable.nombre }}
-              <i
-                class="pi pi-times"
-                v-tooltip="'Eliminar responsable'"
-                @click="eliminarResponsable(tarjeta.id, responsable.id)"
-              ></i>
-            </li>
-          </ul>
-          <span v-if="stateResponsable.responsables.length == 0">
+        <DataTable class="p-mt-2" :scrollable="true" scrollHeight="400px" :value="stateResponsable.responsables" showGridlines responsiveLayout="scroll">
+          <template #empty>
             No hay responsables asignados.
-          </span>
-        </div>
-      </div>
-      <div class="p-col-12 p-lg-4">
+          </template>
+          <template #header>
+            <div class="table-header">
+              LISTA DE RESPONSABLES
+            </div>
+          </template>
+          <Column field="nombre" header="Nombre" :headerStyle="{'display': 'none',}">
+            <template #body="slotProps">
+              <Avatar :image="slotProps.data.image"  class="p-mr-2" size="xlarge" shape="circle" v-if="slotProps.data.image"/>
+              <Avatar icon="pi pi-user" class="p-mr-2" size="xlarge" shape="circle"  v-else/>
+              {{slotProps.data.apellido}}, {{slotProps.data.nombre}}<i
+                class="pi pi-times ml-2"
+                style="font-size: 0.7rem"
+                v-tooltip="'Eliminar responsable'"
+                @click="eliminarResponsable(tarjeta.id, slotProps.data.id)"
+            ></i>
+            </template>
+          </Column>
+          <Column field="apellido" header="Name" :headerStyle="{'display': 'none',}">
+            <template #body="slotProps">
+              {{slotProps.data.created_at}}
+            </template>
+          </Column>
+        </DataTable>
         <div class="p-col-12 p-jc-center">
           <Button
-            label="Agregar Responsable"
-            class="p-button-outlined p-button-secondary"
-            @click="openModalResponsable"
+              label="Agregar Responsable"
+              class="p-button-outlined p-button-secondary p-col-12"
+              @click="openModalResponsable"
           />
         </div>
+
         <div class="p-col-12 p-justify-center">
           <ScrollPanel
-            class="p-text-left p-px-1"
-            style="width: 100%; height: 300px; border: 1px solid #41444D; border-radius: 5px; background-color:white"
+              class="p-text-left p-px-1"
+              style="width: 100%; height: 300px; border: 1px solid #41444D; border-radius: 5px; background-color:white"
           >
             <p
-              style="fontSize: 13px"
-              v-for="comentario in chat"
-              :key="comentario.id"
+                style="fontSize: 13px"
+                v-for="comentario in chat"
+                :key="comentario.id"
             >
               Enviado {{ comentario.created_at }}
               <br />
@@ -107,32 +104,57 @@
               <br />
               <span class="w-100" v-if="comentario.is_image">
                 <img
-                  class="image"
-                  :src="'data:image/jpeg;base64,' + comentario.comentario"
+                    class="image"
+                    :src="'data:image/jpeg;base64,' + comentario.comentario"
                 />
-                <hr />
               </span>
               <span class="p-text-bold" v-else>
                 {{ comentario.comentario }}
-                <hr />
               </span>
+              <hr />
             </p>
           </ScrollPanel>
         </div>
         <div class="p-col-12" v-if="tarjeta.type_state_id == 'Abierto'">
           <Textarea
-            class="p-col-12"
-            v-model.trim="nuevoComentario.comentario"
-            :autoResize="true"
+              class="p-col-12"
+              v-model.trim="nuevoComentario.comentario"
+              :autoResize="true"
           />
           <Button
-            label="Agregar comentario"
-            class="p-button-outlined p-button-secondary p-col-12 p-mt-2"
-            @click="agregarComentario"
+              label="Agregar comentario"
+              class="p-button-outlined p-button-secondary p-col-12 p-mt-2"
+              @click="agregarComentario"
           />
         </div>
       </div>
-    </div>
+      <div class="p-col-12 p-lg-4" style="background-color: #e6e7e9; border: 2px solid gray;border-radius: 15px;">
+        <div style="background-color: white; height: 270px; border: 2px solid gray; border-radius: 15px;">
+          <GoogleMap
+              ref="mapRef"
+              id="map"
+              class="map p-p-2"
+              api-key="AIzaSyBxvS42el_I328QCEwig5Vx1Lj8gVBXT4Q"
+              style="width: 100%; height: 250px"
+              :mapTypeControl="false"
+              :center="center"
+              :zoom="8"
+          >
+            <Marker :options="markerOptions" />
+          </GoogleMap>
+        </div>
+        <img class="p-mt-2" @click="mostrarFullscreen" style="border: 2px solid gray; border-radius: 15px; width: 100%" :src="tarjeta.imagen"  v-if="tarjeta.imagen"/>
+        <Galleria :value="[{tarjeta}]" :responsiveOptions="responsiveOptions" :numVisible="9" containerStyle="max-width: 50%"
+                  :circular="false" :fullScreen="true" :showIndicators="false" :showThumbnails="false" :showItemNavigators="false" v-model:visible="displayImage">
+          <template #item="slotProps">
+            <img :src="tarjeta.imagen" style="width: 100%; display: block;" />
+          </template>
+          <template #thumbnail="slotProps">
+
+          </template>
+        </Galleria>
+      </div>
+      </div>
     <Dialog
       header="Agregar Responsable"
       v-model:visible="displayModalResponsable"
@@ -209,7 +231,10 @@ import ScrollPanel from "primevue/scrollpanel";
 import { useToast } from "primevue/usetoast";
 import Dialog from "primevue/dialog";
 import MultiSelect from "primevue/multiselect";
-
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Galleria from "primevue/galleria";
+import Avatar from 'primevue/avatar';
 export default {
   components: {
     ProgressSpinner,
@@ -221,6 +246,10 @@ export default {
     ScrollPanel,
     Dialog,
     MultiSelect,
+    DataTable,
+    Column,
+    Galleria,
+    Avatar
   },
   setup() {
     const { obtenerTarjeta, cambiarEstado } = TarjetasService();
@@ -262,6 +291,24 @@ export default {
     let responsablesDisponibles = ref([]);
     let nuevosResponsables = ref(null);
     let responsablesAsignados = ref([]);
+
+    const responsiveOptions = ref([{
+          breakpoint: '1500px',
+          numVisible: 5
+        },
+        {
+          breakpoint: '1024px',
+          numVisible: 3
+        },
+        {
+          breakpoint: '768px',
+          numVisible: 2
+        },
+        {
+          breakpoint: '560px',
+          numVisible: 1
+        }]);
+    let displayImage = ref(false);
 
     const obtenerScore = async (cardId) => {
       let response = await obtenerPuntajeDado(cardId);
@@ -378,6 +425,10 @@ export default {
       loading.value = false;
     });
 
+    const mostrarFullscreen = () =>{
+      displayImage.value = true;
+    }
+
     return {
       loading,
       tarjeta,
@@ -401,6 +452,9 @@ export default {
       mapRef,
       eliminarResponsable,
       stateResponsable,
+      responsiveOptions,
+      displayImage,
+      mostrarFullscreen
     };
   },
 };
@@ -444,4 +498,23 @@ export default {
   margin: 5px;
   padding: 3px;
 }
+.headerName{
+  background-color: red;
+  padding: 4px;
+  color: white;
+}
+
+table{
+  border: none !important;
+}
+td{
+  padding: 8px;
+  border: none !important;
+}
+
+tr:nth-child(even) {
+  background-color: #f3f3f3 !important;
+  border: none !important;
+}
+
 </style>

@@ -9,8 +9,7 @@
 		"dependencies": {
 				"@googlemaps/js-api-loader": "^1.12.1",
 				"@tailwindcss/forms": "^0.2.1",
-				"chart.js": "^3.4.0",
-				"chartjs-plugin-labels": "^1.1.0",
+				"chart.js": "^2.9.4",
 				"jwt-decode": "^3.1.2",
 				"vue": "^3.0.5",
 				"vue-debounce": "^2.6.0",
