@@ -357,7 +357,10 @@ export default {
       nuevosResponsables.value = null;
       displayModalResponsable.value = false;
     };
-    const openModalResponsable = () => {
+
+    const openModalResponsable = async () => {
+      const resp = await ObtenerListadoResponsables(tarjeta.value.id);
+      responsablesDisponibles.value = resp;
       displayModalResponsable.value = true;
     };
 

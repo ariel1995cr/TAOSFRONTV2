@@ -27,6 +27,32 @@
         <Column field="cantidad" header="CREADAS"></Column>
       </DataTable>
     </div>
+    <div class="p-col-12 p-md-6">
+      <GMapMap
+          :center="center"
+          :zoom="7"
+          map-type-id="terrain"
+          style="width: 500px; height: 10rem"
+      >
+        <GMapCluster>
+          <GMapMarker
+              :key="index"
+              v-for="(m, index) in state.marcadores"
+              :position="{
+                lat: Number(m.latitud),
+                lng: Number(m.longitud),
+              }"
+              :clickable="true"
+              :draggable="true"
+              :zoomOnClick="true"
+              @click="center={
+                lat: Number(m.latitud),
+                long: Number(m.longitud),
+              }"
+          />
+        </GMapCluster>
+      </GMapMap>
+    </div>
   </div>
 </template>
 
@@ -68,6 +94,7 @@ export default {
 
     const refRankingUsuarios = ref([]);
 
+
     const optionsPercentaje = ref({
       plugins: {
         labels: [
@@ -93,6 +120,8 @@ export default {
       await refTarjetasAnual.value.refresh();
     });
 
+    const center = reactive({lat: -45.7833300, lng: -67.4500000});
+
     return {
       state,
       chartClasificacion,
@@ -100,11 +129,18 @@ export default {
       refTarjetasAnual,
       chartTarjetasAnual,
       optionsPercentaje,
-      refRankingUsuarios
+      refRankingUsuarios,
+      center,
     };
   },
 };
 </script>
 
-<style></style>
+<style>
+.vue-map{
+  width: 100% !important;
+  height: 450px !important;
+  min-height: 2rem !important;
+}
+</style>
 

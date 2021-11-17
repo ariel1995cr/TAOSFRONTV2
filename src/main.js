@@ -20,6 +20,7 @@ import "./assets/layout/flags/flags.css";
 import vueDebounce from "vue-debounce";
 import ConfirmationService from "primevue/confirmationservice";
 import PrimeVue from "primevue/config";
+import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 const app = createApp(App);
 app.config.globalProperties.$appState = reactive({ inputStyle: "outlined" });
@@ -39,6 +40,13 @@ app.use(PrimeVue,{
         tooltip: 1100       //tooltip
     }
 });
+
+app.use(VueGoogleMaps, {
+    load: {
+        key: 'AIzaSyD62MSPtoCBTPdiiI91RRJl0o0qdEsBdII',
+    },
+});
+
 app
   .use(router)
   .use(ToastService)

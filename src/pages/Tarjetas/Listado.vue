@@ -3,12 +3,18 @@
     <DataTable :value="customers" :lazy="true" :paginator="true" :rows="15" v-model:filters="filters" ref="dt"
                :totalRecords="totalRecords" :loading="loading" @page="onPage($event)" @sort="onSort($event)" @update:filters="onFilter($event)" filterDisplay="row"
                :globalFilterFields="['created_at', 'countryName']" responsiveLayout="scroll">
-      <Column field="created_at" header="FECHA" filterField="c.created_at" filterMatchMode="contains" ref="created_at" :sortable="true">
+      <template #header>
+        <div style="text-align:left">
+          <MultiSelect :modelValue="selectedColumns" :options="columns" optionLabel="header" @update:modelValue="onToggle"
+                       placeholder="Select Columns" style="width: 20em"/>
+        </div>
+      </template>
+      <Column field="created_at" header="FECHA" filterField="c.created_at" filterMatchMode="contains" ref="created_at" :sortable="true" v-if="buscarSeleccion('created_at')">
         <template #filter="{filterModel,filterCallback}">
           <Calendar dateFormat="dd/mm/yy" id="calendar" v-model="filterModel.value" @date-select="filterCallback" placeholder="Buscar por fecha" :showIcon="true" />
         </template>
       </Column>
-      <Column field="idCard" header="NÚMERO" filterField="c.id" sortField="c.id" filterMatchMode="contains" ref="idCard" :sortable="true">
+      <Column field="idCard" header="NÚMERO" filterField="c.id" sortField="c.id" filterMatchMode="contains" ref="idCard" :sortable="true" v-if="buscarSeleccion('idCard')">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback" class="p-column-filter" placeholder="Buscar por número"/>
         </template>
@@ -18,22 +24,28 @@
             }}</router-link>
         </template>
       </Column>
-      <Column field="countryName" header="PAÍS" filterField="countries.name" sortField="countries.name" filterMatchMode="contains" ref="countryName" :sortable="true">
+      <Column field="countryName" header="PAÍS" filterField="countries.name" sortField="countries.name" filterMatchMode="contains" ref="countryName" :sortable="true" v-if="buscarSeleccion('countryName')">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="Buscar por país"/>
         </template>
       </Column>
-      <Column field="stateName" header="PROVINCIA" filterField="states.name" filterMatchMode="contains" ref="stateName" :sortable="true">
+      <Column field="stateName" header="PROVINCIA" filterField="states.name" filterMatchMode="contains" ref="stateName" :sortable="true" v-if="buscarSeleccion('stateName')">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="Buscar por provincia"/>
         </template>
       </Column>
-      <Column field="cityName" header="CIUDAD" filterField="cities.name" filterMatchMode="contains" ref="cityName" :sortable="true" >
+      <Column field="cityName" header="CIUDAD" filterField="cities.name" filterMatchMode="contains" ref="cityName" :sortable="true"  v-if="buscarSeleccion('cityName')" >
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="Buscar por ciudad"/>
         </template>
       </Column>
-      <Column field="apellido" header="CREADO POR" filterField="u.fullName" ref="fullName" :sortable="true">
+      <Column field="latitud" header="LAT" filterField="latitud" filterMatchMode="contains" :sortable="false" v-if="buscarSeleccion('latitud')">
+      </Column>
+      <Column field="longitud" header="LONG" filterField="longitud" filterMatchMode="contains" :sortable="false" v-if="buscarSeleccion('longitud')">
+      </Column>
+      <Column field="type_state_id" header="Estado" filterField="type_state_id" filterMatchMode="contains" :sortable="false" v-if="buscarSeleccion('type_state_id')" >
+      </Column>
+      <Column field="apellido" header="CREADO POR" filterField="u.fullName" ref="fullName" :sortable="true" v-if="buscarSeleccion('apellido')">
         <template #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="Buscar por nombre"/>
         </template>
@@ -43,7 +55,7 @@
           {{slotProps.data.apellido}} {{slotProps.data.nombre}}
         </template>
       </Column>
-      <Column field="responsables" header="Responsables" >
+      <Column field="responsables" header="Responsables" v-if="buscarSeleccion('responsables')">
         <template #body="slotProps">
           <span v-if="slotProps.data.responsables.length == 0">No hay responsables.</span>
           <AvatarGroup class="p-mb-3">
@@ -59,7 +71,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import TarjetasService from "../../services/TarjetasService";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
@@ -67,6 +79,9 @@ import InputText from "primevue/inputtext";
 import InputMask from "primevue/inputmask";
 import Calendar from "primevue/calendar";
 import Avatar from "primevue/avatar";
+import AvatarGroup from "primevue/avatargroup";
+import MultiSelect from "primevue/multiselect";
+
 export default {
   components:{
     Column,
@@ -74,7 +89,9 @@ export default {
     InputText,
     InputMask,
     Calendar,
-    Avatar
+    Avatar,
+    AvatarGroup,
+    MultiSelect,
   },
   setup() {
     const { listadoTarjetas, state } = TarjetasService();
@@ -105,14 +122,20 @@ export default {
       'cities.name': {value: '', matchMode: 'contains'},
       'u.fullName': {value: '', matchMode: 'contains'},
     });
+
     const lazyParams = ref({});
+
     const columns = ref([
-      {field: 'created_at', header: 'Name'},
-      {field: 'idCard', header: 'Country'},
-      {field: 'countryName', header: 'Company'},
-      {field: 'stateName', header: 'Representative'},
-      {field: 'cityName', header: 'Representative'},
-      {field: 'fullName', header: 'Representative'}
+      {field: 'created_at', header: 'FECHA'},
+      {field: 'idCard', header: 'NÚMERO'},
+      {field: 'countryName', header: 'PAÍS'},
+      {field: 'states.name', header: 'PROVINCIA'},
+      {field: 'cityName', header: 'CIUDAD'},
+      {field: 'apellido', header: 'CREADO POR'},
+      {field: 'responsables', header: 'Responsables'},
+      {field: 'latitud', header: 'LAT'},
+      {field: 'longitud', header: 'LONG'},
+      {field: 'type_state_id', header: 'Estado'},
     ]);
 
 
@@ -137,7 +160,18 @@ export default {
       loadLazyData();
     }
 
-    return { dt, loading, totalRecords, customers, filters, lazyParams, columns, loadLazyData, onPage, onSort, onFilter }
+    const selectedColumns = ref(columns.value);
+
+    const buscarSeleccion = (data) => {
+      let busqueda = selectedColumns.value.findIndex(x => x.field == data)
+      return busqueda != -1;
+    };
+
+    const onToggle = (val) => {
+      selectedColumns.value = columns.value.filter(col => val.includes(col));
+    };
+
+    return { buscarSeleccion, selectedColumns ,dt, loading, totalRecords, customers, onToggle, filters, lazyParams, columns, loadLazyData, onPage, onSort, onFilter }
   }
 }
 </script>

@@ -5,6 +5,7 @@ export default function dashboardService() {
   let state = reactive({
     numeroTarjetas: 0,
     numeroUsuarios: 0,
+    marcadores : [],
     data: [],
   });
 
@@ -16,6 +17,7 @@ export default function dashboardService() {
       .then((resp) => {
         state.numeroTarjetas = resp.data.CardTotal;
         state.numeroUsuarios = resp.data.UsersTotal;
+        state.marcadores = resp.data.marcadores;
       })
       .catch((err) => {
         console.log(err);

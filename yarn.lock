@@ -925,6 +925,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@fawmi/vue-google-maps@^0.9.4":
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/@fawmi/vue-google-maps/-/vue-google-maps-0.9.4.tgz#80a157de4424b3c4048a3a1700e90297a7ab0c8f"
+  integrity sha512-NTQT0QXj2IFLZl/Dz7pLN4xB6TaLTBAWQsxsbRI21nNeoMcCGRumosUrMxxia1XMYBYyy/3Zoju6JLQ8ODg/LA==
+  dependencies:
+    "@googlemaps/markerclustererplus" "^1.2.3"
+
 "@fullcalendar/core@4.0.2":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-4.0.2.tgz#59ef822ba0c4bda60609d8b2d9f71bee8875505b"
@@ -965,6 +972,11 @@
   integrity sha512-Nmk7pKn/819zIC0QTE5eA+kNmYpODQXyoCdk17nWiqx42gcb6NQEwssAuH/Aa+HeF0+ICYf5khIxDyY5njWJdg==
   dependencies:
     fast-deep-equal "^3.1.3"
+
+"@googlemaps/markerclustererplus@^1.2.3":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@googlemaps/markerclustererplus/-/markerclustererplus-1.2.8.tgz#5547751c6f6ca9e1a6c748496034162f901a7f74"
+  integrity sha512-785/vFDnv0Y3gIFVyWMpYTlQOVxp+BaGxLmS48u1FSv0ywA0WB5vtN5mM1HdxU04l93J2o3b3oWUdjv2rdVOoA==
 
 "@hapi/address@2.x.x":
   version "2.1.4"
